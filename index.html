@@ -210,9 +210,9 @@ let pedidos = []; // {id, post, pessoa, texto, cards, tipos, em, resolvido}
 let db = null, user = null, souDono = false, uid = null;
 const $ = s => document.querySelector(s);
 const el = (t, cls, txt) => { const e = document.createElement(t); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
-const zap = msg => 'https://wa.me/' + cfg.whatsapp + '?text=' + encodeURIComponent(msg);
-const zapAprov = msg => 'https://wa.me/' + (cfg.whatsappAprovacao || cfg.whatsapp) + '?text=' + encodeURIComponent(msg);
-const msgAprov = p => '✅ ' + eu + ' aprovou o Post ' + p.id + ' · ' + p.nome + '\n(' + cfg.cliente + ', ' + cfg.leva + ')';
+const zap = msg => 'https://api.whatsapp.com/send?phone=' + cfg.whatsapp + '&text=' + encodeURIComponent(msg);
+const zapAprov = msg => 'https://api.whatsapp.com/send?phone=' + (cfg.whatsappAprovacao || cfg.whatsapp) + '&text=' + encodeURIComponent(msg);
+const msgAprov = p => '✅ *Post ' + p.id + ' aprovado*\n' + p.nome + '\n\nCliente: ' + cfg.cliente + '\nAprovado por: ' + eu;
 const hora = iso => { try { return new Date(iso).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}) } catch(e) { return '' } };
 
 function statusPost(p) {
@@ -362,7 +362,7 @@ let atual = null, cardsSel = new Set(), tiposSel = new Set();
 function msg() {
   if (!atual) return '';
   const cards = atual.imgs.length > 1 ? (cardsSel.size ? [...cardsSel].sort((a,b)=>a-b).map(n => 'card ' + n).join(', ') : 'carrossel todo') : 'imagem única';
-  return '✏️ *Pedido de alteração*\n' + cfg.cliente + ' · ' + cfg.leva + '\n\n*Post ' + atual.id + '* · ' + atual.nome + '\nOnde: ' + cards +
+  return '📝 *Pedido de alteração*\nCliente: ' + cfg.cliente + '\n\n*Post ' + atual.id + '* · ' + atual.nome + '\nOnde: ' + cards +
     (tiposSel.size ? '\nTipo: ' + [...tiposSel].join(', ') : '') + '\nPedido por: ' + eu + '\n\n*O que mudar:*\n' + ($('#texto').value.trim() || '…');
 }
 function atualizaMsg() {
